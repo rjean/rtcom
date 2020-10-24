@@ -2,7 +2,7 @@
 
 __author__ = """Raphael Jean"""
 __email__ = 'raphael.jean@rocketmail.com'
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 from .rtcom import RealTimeCommunication, RealTimeCommunicationWriter, RealTimeCommunicationListener
 
