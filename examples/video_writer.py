@@ -7,7 +7,7 @@ from PIL import Image, ImageDraw
 import numpy as np
 from threading import Thread
 
-
+from utils import VideoCapture
 
 import cv2, queue, threading, time
 
