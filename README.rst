@@ -6,8 +6,8 @@ RealTimeCommunication
 .. image:: https://img.shields.io/pypi/v/rtcom.svg
         :target: https://pypi.python.org/pypi/rtcom
 
-.. image:: https://img.shields.io/travis/rjean/rtcom.svg
-        :target: https://travis-ci.com/rjean/rtcom
+.. image:: https://img.shields.io/github/workflow/status/rjean/rtcom/Upload%20Python%20Package
+        :target: https://github.com/rjean/rtcom/actions?query=workflow%3A%22Upload+Python+Package%22
 
 .. image:: https://readthedocs.org/projects/rtcom/badge/?version=latest
         :target: https://rtcom.readthedocs.io/en/latest/?badge=latest
