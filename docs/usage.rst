@@ -21,7 +21,7 @@ In order to receive information from the device "rpi" on the device "pc"::
         while(True):
             print(rtcom["rpi"]["heartbeat])
 
-Assuming that the first program runs on an embedded device, such as a RaspberriPI, and the second device will
+Assuming that the first program runs on an embedded device, such as a Raspberry Pi, and the second device will
 display the heartbeat from the "rpi". rtcom will handle synchronisation between the two devices. A periodical thread
 retransmits the information over and over again in UDP broadcasts. 
 
