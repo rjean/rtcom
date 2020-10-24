@@ -1,7 +1,7 @@
 
 #From : https://stackoverflow.com/questions/43665208/how-to-get-the-latest-frame-from-capture-device-camera-in-opencv
 import cv2, threading, queue
-
+from time import sleep
 
 def write_header(image, text):
     cv2.putText(image,text, (10,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 1)
@@ -30,6 +30,7 @@ class VideoCapture:
         except queue.Empty:
           pass
       self.q.put(frame)
+      sleep(0.010)
 
   def read(self):
     return self.q.get()
