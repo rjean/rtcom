@@ -25,4 +25,7 @@ with RealTimeCommunication("rpi") as rtcom:
         image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         ret, jpg_image = cv2.imencode("*.jpg",frame, encode_param)
         rtcom.broadcast_endpoint("camera", bytes(jpg_image), encoding="binary")
+        rtcom.broadcast_endpoint("data",data)
+
+
         
