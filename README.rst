@@ -18,15 +18,28 @@ RealTimeCommunication
 
 Real Time Communication Library for home robotics and automation. 
 
+The aim of this library is to provide a quick and easy way to prototype "Intranet of Things" devices. 
+
+It was first developed for a hobby robotics project in order to have a interface between the robot and a PC,
+without having to worry about networking, IP addresses, hostnames, web servers or callbacks. 
 
 * Free software: MIT license
 * Documentation: https://rtcom.readthedocs.io.
 
-
 Features
 --------
 
-* TODO
+* Real-time UDP broadcast based synchronisation of all rtcom nodes.
+* Automatic discovery of devices. (No DNS or Avahi required)
+* Possibility of unicast, without having to worry about IP addresses, DNS or Avahi.
+* Get started with just a few lines of code.
+
+
+Current limitations
+--------
+* Only a single process can listen to rtcom traffic for now per device.
+* This version of the stack can be CPU intensive. Optimization for marshalling would be useful to reduce CPU usage.
+
 
 Credits
 -------
