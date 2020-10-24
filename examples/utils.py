@@ -4,11 +4,11 @@ import cv2, threading, queue
 
 
 def write_header(image, text):
-    cv2.putText(img,text, (10,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 1)
+    cv2.putText(image,text, (10,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 1)
 
 def write_line(image, line_number, text):
     cv2.putText(image,text, (10,60+20*line_number), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255), 1)
-    
+
 # bufferless VideoCapture
 class VideoCapture:
   def __init__(self, name):

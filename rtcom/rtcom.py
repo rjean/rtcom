@@ -7,13 +7,28 @@ import re
 from threading import Thread
 import queue
 
-def read_raw_message(data):
-    for i in range(len(data)):
-        if data[i]==ord('\n'):
-            return data[0:i].decode("utf-8"), data[i+1:]
+def read_raw_message(raw_data : bytes) -> tuple:
+    """Splits the message header from the data bytes of the message.
+
+    :param raw_data: Full UDP packet
+    :type raw_data: bytes
+    :raises ValueError: When there header line is not present. 
+    :return: (Header, Data bytes)
+    :rtype: Tuple
+    """
+    for i in range(len(raw_data)):
+        if raw_data[i]==ord('\n'):
+            return raw_data[0:i].decode("utf-8"), raw_data[i+1:]
     raise ValueError("Unable to find the end of line")
 
-def read_message(raw_data):
+def read_message(raw_data : bytes):
+    """Reads a UDP raw message, split the metadata, and decode data.
+
+    :param raw_data: Raw UDP packet
+    :type raw_data: bytes
+    :return: Metadata and decoded data required for packet reassembly.
+    :rtype: tuple
+    """
     header, data = read_raw_message(raw_data)
     #'device/endpoint:encoding:id:sequence'
     match = re.search("(.*?)/(.*?):(.*?):(.*?):(.*?):(.*)", header)
@@ -29,7 +44,25 @@ def read_message(raw_data):
         decoded_data = data
     return device, endpoint, decoded_data, encoding, int(id), int(sequence), int(max_sequence)
 
-def build_message(device_name, endpoint, data, encoding, id=0, max_size=1000):
+def build_message(device_name: str, endpoint: str, data, encoding: str, id=0, max_size=1000):
+    """Prepare the individual UDP packets required to send a message. 
+
+    :param device_name: Device Name
+    :type device_name: str
+    :param endpoint: Endpoint
+    :type endpoint: str
+    :param data: Data to transmit. Can be raw bytes or a python object to be encoded.
+    :type data: bytes or object
+    :param encoding: If an object is to be transmittted, encoding must be specified. YAML is the default encoding.
+    :type encoding: str
+    :param id: Packet sequence identifier, defaults to 0
+    :type id: int, optional
+    :param max_size: Maximum UDP payload size, defaults to 1000
+    :type max_size: int, optional
+    :raises ValueError: When the data type to transmit is not supported.
+    :return: List of UDP messages
+    :rtype: list
+    """
     messages = []
     if encoding=="yaml":
         encoded_data = bytes(yaml.dump(data), "utf-8")
@@ -54,6 +87,8 @@ def build_message(device_name, endpoint, data, encoding, id=0, max_size=1000):
     return messages
 
 class Device():
+    """Objects that represent a device.
+    """
     def __init__(self, name, addr):
         self.name=name
         self.addr=addr
@@ -69,6 +104,8 @@ class Device():
         return key in self.endpoints
 
 class Endpoint():
+    """Object that represent an endpoint.
+    """
     def __init__(self, name, encoding, data = None):
         self.name = name
         self.encoding = encoding
@@ -79,7 +116,16 @@ class Endpoint():
     
 
 class RealTimeCommunication:
+    """Handles the RealTimeCommunication.
+    """
     def __init__(self, device_name=None, listen=True):
+        """[summary]
+
+        :param device_name: Name of the device. Will be used for other device to identify this one, defaults to hostname.
+        :type device_name: [str], optional
+        :param listen: Make this object the listen thread. There can only be one listener for now, defaults to True
+        :type listen: bool, optional
+        """
         if device_name is None:
             self.device_name = socket.gethostname()
         else:

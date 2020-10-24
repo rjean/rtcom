@@ -2,6 +2,7 @@ from rtcom import RealTimeCommunication
 import cv2
 import numpy as np
 from time import sleep
+from utils import VideoCapture, write_header, write_line
 
 with RealTimeCommunication("pc") as rtcom:
     rtcom.subscribe("rpi","camera") #Request unicast for this specific endpoint.
