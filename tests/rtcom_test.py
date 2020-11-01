@@ -58,6 +58,16 @@ class TestRealTimeCommunication(unittest.TestCase):
         self.assertEqual(len(received_data),12345)
         self.assertEqual(received_data, random_data)
 
+    def test_ignore_late_packet(self):
+        with RealTimeCommunication("test.device") as rtcom:
+            rtcom._broadcast_endpoint("test", "first")
+            rtcom._broadcast_endpoint("test", "second")
+            rtcom._broadcast_endpoint("test", "third")
+            rtcom._broadcast_endpoint("test", "second",test_id_override=1)
+            sleep(0.1)
+            self.assertEqual(rtcom["test.device"]["test"],"third")
+            
+            
 
     def test_big_message(self):
         with RealTimeCommunication("test.device") as rtcom:
@@ -65,7 +75,16 @@ class TestRealTimeCommunication(unittest.TestCase):
             rtcom.broadcast_endpoint("image_data", big_message, encoding="binary")
             sleep(1)
             self.assertEqual(len(rtcom["test.device"]["image_data"]),60000)
-
+    def test_big_messages(self):
+        with RealTimeCommunication("test.device") as rtcom:
+            big_message = bytearray(os.urandom(60000)) 
+            rtcom.broadcast_endpoint("image_data", big_message, encoding="binary")
+            sleep(1)
+            self.assertEqual(len(rtcom["test.device"]["image_data"]),60000)
+            big_message = bytearray(os.urandom(60000)) 
+            rtcom.broadcast_endpoint("image_data", big_message, encoding="binary")
+            sleep(1)
+            self.assertEqual(len(rtcom["test.device"]["image_data"]),60000)
 
     def test_read_raw_message(self):
         message = build_message("device", "endpoint", {"hello" : "world"}, "yaml")[0]

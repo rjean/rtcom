@@ -196,12 +196,15 @@ class RealTimeCommunication:
         return self.subscribers
 
     #def broadcast_endpoint(self, endpoint, data, encoding="yaml", addr=None):
-    def _broadcast_endpoint(self, endpoint, data, encoding="yaml", addr=None):
+    def _broadcast_endpoint(self, endpoint, data, encoding="yaml", addr=None, test_id_override=None):
         if endpoint not in self.endpoints:
             self.endpoints[endpoint]=0
         else:
             self.endpoints[endpoint]+=1
-        packets = build_message(self.device_name, endpoint, data, encoding, id=self.endpoints[endpoint])
+        packet_id = self.endpoints[endpoint]
+        if test_id_override is not None:
+            packet_id = test_id_override
+        packets = build_message(self.device_name, endpoint, data, encoding, id=packet_id)
 
         if endpoint in self.subscribers:
             for device_name in self.subscribers[endpoint]:
@@ -209,27 +212,17 @@ class RealTimeCommunication:
                 self.broadcast(packets, addr=addr)
         else:
             self.broadcast(packets)
-        #for packet in packets:
-        #    self.broadcast(packet)
 
     def broadcast_endpoint(self, endpoint, data, encoding="yaml", addr=None, synchronous=False):
         if not synchronous:
             self.message_queue.put((endpoint, data, encoding, addr))
         else:
             self._broadcast_endpoint(endpoint, data, encoding, addr)
-        #thread = Thread(target = self._broadcast_endpoint, args = (endpoint, data, encoding, addr))
-        #thread.start()
-        #if synchronous: #Mainly for unit testing.
-        #    thread.join()
-
-        
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self.listen:
             self.listen_thread.enabled=False
             self.listen_thread.join()
-            #self.writer_thread.enabled=False
-            #self.writer_thread.join()
 
 class RealTimeCommunicationWriter(threading.Thread):
     def __init__(self, rtcom):
@@ -293,7 +286,10 @@ class RealTimeCommunicationListener(threading.Thread):
                     if endpoint not in self.devices[device].endpoints:
                         self.devices[device].endpoints[endpoint] = Endpoint(endpoint, encoding, data)
                     else:
-                        self.devices[device].endpoints[endpoint].data = data
+                        if ((id > self.devices[device].endpoints[endpoint].transmission_id) or
+                            (abs(self.devices[device].endpoints[endpoint].transmission_id-id)>10)):
+                            self.devices[device].endpoints[endpoint].transmission_id = id
+                            self.devices[device].endpoints[endpoint].data = data
                 else:
                     #Handle big messages
                     if endpoint not in self.devices[device].endpoints:
