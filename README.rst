@@ -38,8 +38,6 @@ Features
 Current limitations
 -------------------
 * Only a single process can listen to rtcom traffic for now per device.
-* This version of the stack can be CPU intensive. Optimization for marshalling would be useful to reduce CPU usage.
-
 
 Credits
 -------
