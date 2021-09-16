@@ -34,11 +34,6 @@ Features
 * Possibility of unicast, without having to worry about IP addresses, DNS or Avahi.
 * Get started with just a few lines of code.
 
-
-Current limitations
--------------------
-* Only a single process can listen to rtcom traffic for now per device.
-
 Credits
 -------
 
