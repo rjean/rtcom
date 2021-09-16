@@ -114,11 +114,11 @@ class TestRealTimeCommunication(unittest.TestCase):
         self.assertEqual(data, {"hello": "world"})
 
     def test_reuse(self):
-        a = RealTimeCommunication("a")
-        b = RealTimeCommunication("b")
-        a.broadcast_endpoint("test_a", 1234)
-        sleep(1)
-        assert b["a"]["test_a"] == 1234
+        with RealTimeCommunication("a") as a:
+            with RealTimeCommunication("b") as b:
+                a.broadcast_endpoint("test_a", 1234)
+                sleep(1)
+                assert b["a"]["test_a"] == 1234
 
 
 if __name__ == "__main__":
