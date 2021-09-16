@@ -41,7 +41,7 @@ def read_message(raw_data: bytes):
     sequence = match[5]
     max_sequence = match[6]
     if encoding == "yaml":
-        decoded_data = yaml.load(data.decode("utf-8"))
+        decoded_data = yaml.load(data.decode("utf-8"), Loader=yaml.Loader)
     else:
         decoded_data = data
     return (
@@ -274,6 +274,8 @@ class RealTimeCommunicationListener(threading.Thread):
             UDP_IP = "0.0.0.0"
         print(f"Listening to {UDP_IP}")
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # Internet  # UDP
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         self.sock.bind((UDP_IP, port))
         self.sock.setblocking(False)
         self.sock.settimeout(0.01)

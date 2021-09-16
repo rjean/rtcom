@@ -113,6 +113,13 @@ class TestRealTimeCommunication(unittest.TestCase):
         self.assertEqual(encoding, "yaml")
         self.assertEqual(data, {"hello": "world"})
 
+    def test_reuse(self):
+        a = RealTimeCommunication("a")
+        b = RealTimeCommunication("b")
+        a.broadcast_endpoint("test_a", 1234)
+        sleep(1)
+        assert b["a"]["test_a"] == 1234
+
 
 if __name__ == "__main__":
     unittest.main()
